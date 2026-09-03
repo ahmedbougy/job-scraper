@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ job.Job_Title }} | تفاصيل الوظيفة</title>
+    
+    <!-- Bootstrap 5 RTL & Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --card-bg: rgba(22, 31, 48, 0.85);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --accent-blue: #6366f1;
+            --accent-purple: #a855f7;
+            --accent-cyan: #06b6d4;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .glow-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.05) 50%, transparent 70%);
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+        }
+
+        .hero-title {
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 14px 28px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
+            color: #fff;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: 12px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .info-badge {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--card-border);
+            padding: 14px 22px;
+            border-radius: 16px;
+        }
+        
+        .info-badge-title {
+            color: #cbd5e1 !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-badge-value {
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .description-box {
+            background: rgba(11, 15, 25, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            line-height: 1.9;
+            color: #f1f5f9;
+            font-size: 1.05rem;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-bg"></div>
+
+    <div class="container py-5">
+        <!-- Back Navigation -->
+        <div class="mb-4" data-aos="fade-down">
+            <a href="/" class="btn-back d-inline-flex align-items-center gap-2">
+                <i class="bi bi-arrow-right"></i>
+                <span>الرجوع للرئيسية</span>
+            </a>
+        </div>
+
+        <!-- Job Details Card -->
+        <div class="glass-card p-4 p-md-5" data-aos="zoom-in">
+            <!-- Header Section -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 border-bottom border-white border-opacity-10 pb-4 mb-4">
+                <div>
+                    <h2 class="fw-bold hero-title mb-2 display-6">{{ job.Job_Title }}</h2>
+                    <h5 class="text-primary fw-semibold mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-building"></i>
+                        <span>{{ job.The_company }}</span>
+                    </h5>
+                </div>
+                
+                <!-- Apply Button WITH target="_blank" AND rel="noopener noreferrer" -->
+                {% if job.job_url and job.job_url != '#' %}
+                <a href="{{ job.job_url }}" target="_blank" rel="noopener noreferrer" class="btn-glow w-100 w-md-auto">
+                    <span>🔗 التقديم الآن</span>
+                    <i class="bi bi-box-arrow-up-left ms-1"></i>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Meta Badges Grid -->
+            <div class="row g-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-md-6">
+                    <div class="info-badge d-flex align-items-center gap-3">
+                        <div class="rounded-circle p-2 bg-danger bg-opacity-20 text-danger fs-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <span class="info-badge-title">الموقع الجغرافي</span>
+                            <strong class="info-badge-value">{{ job.Location }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-badge d-flex align-items-center gap-3">
+                        <div class="rounded-circle p-2 bg-info bg-opacity-20 text-info fs-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-calendar-event-fill"></i>
+                        </div>
+                        <div>
+                            <span class="info-badge-title">تاريخ النشر</span>
+                            <strong class="info-badge-value">{{ job.Published_date }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div data-aos="fade-up" data-aos-delay="200">
+                <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-file-text text-primary"></i>
+                    <span>الوصف الوظيفي التفصيلي</span>
+                </h5>
+                <div class="description-box">
+                    {{ job.Description if job.Description else 'لا يوجد وصف تفصيلي متاح لهذه الوظيفة حالياً.' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound Effects Script -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', playClickSound);
+        });
+    </script>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

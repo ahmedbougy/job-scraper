@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>منصة الوظائف | البحث عن الفرص</title>
+
+   
+
+    <!-- Bootstrap 5 RTL & Icons -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+   
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+
+   
+
+    <!-- AOS Animation -->
+
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+    <style>
+
+        :root {
+
+            --bg-main: #070a13;
+
+            --card-bg: rgba(18, 26, 43, 0.75);
+
+            --card-border: rgba(255, 255, 255, 0.15);
+
+            --accent-blue: #6366f1;
+
+            --accent-purple: #a855f7;
+
+            --accent-cyan: #06b6d4;
+
+            --text-main: #ffffff;
+
+            --text-muted: #94a3b8;
+
+        }
+
+
+
+        body {
+
+            background-color: var(--bg-main);
+
+            color: var(--text-main);
+
+            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+
+            position: relative;
+
+        }
+
+
+
+        /* --- خلفيات متحركة وثلاثية الأبعاد --- */
+
+        .ambient-glow {
+
+            position: fixed;
+
+            border-radius: 50%;
+
+            filter: blur(90px);
+
+            z-index: -1;
+
+            pointer-events: none;
+
+        }
+
+
+
+        .glow-1 {
+
+            top: -10%;
+
+            right: 20%;
+
+            width: 500px;
+
+            height: 500px;
+
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+
+            animation: floatGlow 12s ease-in-out infinite alternate;
+
+        }
+
+
+
+        .glow-2 {
+
+            bottom: 10%;
+
+            left: -5%;
+
+            width: 600px;
+
+            height: 600px;
+
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+
+            animation: floatGlow 16s ease-in-out infinite alternate-reverse;
+
+        }
+
+
+
+        @keyframes floatGlow {
+
+            0% { transform: translateY(0) scale(1); }
+
+            100% { transform: translateY(50px) scale(1.15); }
+
+        }
+
+
+
+        /* --- تصميم البطاقات الزجاجية Glassmorphism --- */
+
+        .glass-card {
+
+            background: var(--card-bg);
+
+            backdrop-filter: blur(20px);
+
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid var(--card-border);
+
+            border-radius: 24px;
+
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+
+        }
+
+
+
+        /* --- تأثيرات بطاقة الوظيفة التفاعلية الجوهرية --- */
+
+        .job-card {
+
+            position: relative;
+
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            height: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .job-card::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            right: 0;
+
+            left: 0;
+
+            height: 3px;
+
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
+
+            opacity: 0;
+
+            transition: opacity 0.4s ease;
+
+        }
+
+
+
+        .job-card::after {
+
+            content: '';
+
+            position: absolute;
+
+            top: -50%;
+
+            left: -50%;
+
+            width: 200%;
+
+            height: 200%;
+
+            background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.05) 50%, transparent 55%);
+
+            transform: rotate(30deg) translateY(-100%);
+
+            transition: transform 0.8s ease;
+
+        }
+
+
+
+        .job-card:hover {
+
+            transform: translateY(-10px) scale(1.02);
+
+            border-color: rgba(168, 85, 247, 0.5);
+
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(99, 102, 241, 0.3);
+
+        }
+
+
+
+        .job-card:hover::before {
+
+            opacity: 1;
+
+        }
+
+
+
+        .job-card:hover::after {
+
+            transform: rotate(30deg) translateY(100%);
+
+        }
+
+
+
+        /* --- تمييز اسم الشركة --- */
+
+        .company-name-highlight {
+
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            font-weight: 800;
+
+            font-size: 1.05rem;
+
+            letter-spacing: 0.3px;
+
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+
+        }
+
+
+
+        /* --- العناوين والشارات --- */
+
+        .hero-title {
+
+            font-weight: 900;
+
+            background: linear-gradient(135deg, #ffffff 20%, #a5b4fc 60%, #c084fc 100%);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+        }
+
+
+
+        .total-badge {
+
+            background: rgba(99, 102, 241, 0.15);
+
+            border: 1px solid rgba(99, 102, 241, 0.35);
+
+            color: #a5b4fc;
+
+            padding: 6px 18px;
+
+            border-radius: 50px;
+
+            font-weight: 800;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+
+        }
+
+
+
+        /* --- الحقول والأزرار --- */
+
+        .form-control-custom {
+
+            background: rgba(10, 15, 29, 0.8);
+
+            border: 1px solid var(--card-border);
+
+            color: #ffffff;
+
+            border-radius: 14px;
+
+            padding: 12px 16px;
+
+            transition: all 0.3s ease;
+
+        }
+
+        .form-control-custom:focus {
+
+            background: rgba(15, 23, 42, 0.95);
+
+            border-color: var(--accent-purple);
+
+            color: #ffffff;
+
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+
+        }
+
+        .form-control-custom::placeholder {
+
+            color: #64748b;
+
+        }
+
+
+
+        .btn-glow {
+
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+
+            border: none;
+
+            color: #ffffff;
+
+            font-weight: 700;
+
+            border-radius: 14px;
+
+            padding: 12px 24px;
+
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+        }
+
+        .btn-glow:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6);
+
+            color: #ffffff;
+
+        }
+
+
+
+        /* زر تحديث البيانات الأنيق في أعلى الصفحة */
+
+        .btn-update-header {
+
+            background: rgba(245, 158, 11, 0.12);
+
+            border: 1px solid rgba(245, 158, 11, 0.4);
+
+            color: #fbbf24;
+
+            font-weight: 700;
+
+            border-radius: 50px;
+
+            padding: 8px 20px;
+
+            backdrop-filter: blur(10px);
+
+            transition: all 0.3s ease;
+
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
+
+        }
+
+        .btn-update-header:hover {
+
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+
+            color: #000000;
+
+            border-color: transparent;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+
+        }
+
+
+
+        .info-badge {
+
+            background: rgba(10, 15, 29, 0.7);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            padding: 10px 14px;
+
+            border-radius: 14px;
+
+            transition: all 0.3s ease;
+
+        }
+
+        .job-card:hover .info-badge {
+
+            background: rgba(15, 23, 42, 0.9);
+
+            border-color: rgba(255, 255, 255, 0.15);
+
+        }
+
+        .info-badge-title {
+
+            color: var(--text-muted) !important;
+
+            font-weight: 600;
+
+            font-size: 0.8rem;
+
+            display: block;
+
+        }
+
+        .info-badge-value {
+
+            color: #ffffff !important;
+
+            font-weight: 700;
+
+            font-size: 0.9rem;
+
+        }
+
+
+
+        .btn-details {
+
+            background: rgba(255, 255, 255, 0.06);
+
+            border: 1px solid var(--card-border);
+
+            color: #ffffff;
+
+            border-radius: 12px;
+
+            padding: 11px 16px;
+
+            text-decoration: none;
+
+            transition: all 0.3s ease;
+
+            display: block;
+
+        }
+
+        .btn-details:hover {
+
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+
+            border-color: transparent;
+
+            color: #ffffff;
+
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+
+        }
+
+
+
+        /* --- الترقيم Pagination --- */
+
+        .pagination .page-link {
+
+            background: rgba(18, 26, 43, 0.85);
+
+            border-color: var(--card-border);
+
+            color: #ffffff;
+
+            margin: 0 4px;
+
+            border-radius: 12px;
+
+            padding: 10px 18px;
+
+            font-weight: 700;
+
+            transition: all 0.3s ease;
+
+        }
+
+        .pagination .page-item.active .page-link {
+
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+
+            border-color: transparent;
+
+            color: #ffffff;
+
+            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.5);
+
+        }
+
+        .pagination .page-link:hover {
+
+            background: rgba(255, 255, 255, 0.2);
+
+            color: #ffffff;
+
+            transform: translateY(-2px);
+
+        }
+
+
+
+        /* --- التنبيهات المخصصة Custom Alerts --- */
+
+        .custom-alert {
+
+            position: relative;
+
+            background: rgba(15, 23, 42, 0.85);
+
+            backdrop-filter: blur(16px);
+
+            border: 1px solid var(--card-border);
+
+            border-radius: 16px;
+
+            padding: 16px 20px;
+
+            color: #ffffff;
+
+            font-weight: 600;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            animation: alertSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+            overflow: hidden;
+
+        }
+
+        .custom-alert::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0; right: 0; bottom: 0;
+
+            width: 5px;
+
+            border-radius: 0 16px 16px 0;
+
+        }
+
+        .custom-alert-info { border-color: rgba(99, 102, 241, 0.4); }
+
+        .custom-alert-info::before { background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple)); }
+
+        .custom-alert-success { border-color: rgba(34, 197, 94, 0.4); }
+
+        .custom-alert-success::before { background: #22c55e; }
+
+        .custom-alert-danger { border-color: rgba(239, 68, 68, 0.4); }
+
+        .custom-alert-danger::before { background: #ef4444; }
+
+        .custom-alert-warning { border-color: rgba(245, 158, 11, 0.4); }
+
+        .custom-alert-warning::before { background: #f59e0b; }
+
+
+
+        @keyframes alertSlideIn {
+
+            from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+
+            to { opacity: 1; transform: translateY(0) scale(1); }
+
+        }
+
+
+
+        .spinner-glow {
+
+            width: 1.4rem;
+
+            height: 1.4rem;
+
+            border-width: 0.18em;
+
+            color: #a5b4fc;
+
+        }
+
+
+
+        /* Modal Customization */
+
+        .modal-content-custom {
+
+            background: rgba(18, 26, 43, 0.95);
+
+            border: 1px solid var(--card-border);
+
+            color: #ffffff;
+
+            border-radius: 24px;
+
+            backdrop-filter: blur(20px);
+
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+
+        }
+
+        .modal-header-custom { border-bottom: 1px solid var(--card-border); }
+
+        .modal-footer-custom { border-top: 1px solid var(--card-border); }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <!-- التوهج الخلفي المتحرك -->
+
+    <div class="ambient-glow glow-1"></div>
+
+    <div class="ambient-glow glow-2"></div>
+
+
+
+    <div class="container py-5">
+
+       
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4 mb-4 shadow-lg border-0" role="alert">
+
+                        {{ message }}
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- Header -->
+
+        <div class="text-center mb-5" data-aos="fade-down">
+
+            <h1 class="display-3 hero-title mb-3">ابحث عن وظيفتك القادمة</h1>
+
+           
+
+            <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+
+                <div class="total-badge fs-6">
+
+                    <i class="bi bi-briefcase-fill"></i>
+
+                    <span>إجمالي الوظائف المتاحة: <strong>{{ total_jobs }}</strong> وظيفة</span>
+
+                </div>
+
+
+
+                <!-- زر تحديث البيانات بتموضع علوي متناسق وبدون خروج عن الشاشة -->
+
+                <button type="button" class="btn btn-update-header d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#updateModal">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    <span>تحديث البيانات</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Search Form -->
+
+        <div class="glass-card p-4 mb-4" data-aos="fade-up">
+
+            <form action="/search" method="GET" class="row g-3 align-items-center">
+
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text bg-transparent border-0 text-white-50 fs-5 pe-2"><i class="bi bi-search"></i></span>
+
+                        <input type="text" name="q" class="form-control form-control-custom" placeholder="المسمى الوظيفي، المهارة..." value="{{ search_query or '' }}">
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-4">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text bg-transparent border-0 text-white-50 fs-5 pe-2"><i class="bi bi-geo-alt"></i></span>
+
+                        <input type="text" name="location" class="form-control form-control-custom" placeholder="المدينة، الدولة..." value="{{ location or '' }}">
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-4">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text bg-transparent border-0 text-white-50 fs-5 pe-2"><i class="bi bi-building"></i></span>
+
+                        <input type="text" name="company" class="form-control form-control-custom" placeholder="اسم الشركة..." value="{{ company or '' }}">
+
+                    </div>
+
+                </div>
+
+               
+
+                <div class="col-lg-2 col-md-12">
+
+                    <button type="submit" class="btn btn-glow w-100 d-flex align-items-center justify-content-center gap-2">
+
+                        <span>بحث</span>
+
+                        <i class="bi bi-arrow-left"></i>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+
+        <!-- عنصر رسائل حالة التحديث -->
+
+        <div id="status-message" class="mb-4"></div>
+
+
+
+        <!-- Jobs Grid -->
+
+        <div class="row g-4">
+
+            {% if jobs %}
+
+                {% for job in jobs %}
+
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="50">
+
+                    <div class="glass-card job-card p-4">
+
+                        <div>
+
+                            <h4 class="fw-bold text-white mb-2 fs-5 text-truncate" title="{{ job.Job_Title }}">{{ job.Job_Title }}</h4>
+
+                           
+
+                            <!-- اسم الشركة البارز والملون -->
+
+                            <h6 class="mb-4 d-flex align-items-center gap-2">
+
+                                <i class="bi bi-building text-info fs-6"></i>
+
+                                <span class="company-name-highlight text-truncate" title="{{ job.The_company }}">{{ job.The_company }}</span>
+
+                            </h6>
+
+                           
+
+                            <div class="d-flex flex-column gap-2 mb-4">
+
+                                <div class="info-badge d-flex align-items-center gap-3">
+
+                                    <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+
+                                    <div>
+
+                                        <span class="info-badge-title">الموقع</span>
+
+                                        <strong class="info-badge-value">{{ job.Location }}</strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="info-badge d-flex align-items-center gap-3">
+
+                                    <i class="bi bi-calendar-event-fill text-info fs-5"></i>
+
+                                    <div>
+
+                                        <span class="info-badge-title">تاريخ النشر</span>
+
+                                        <strong class="info-badge-value">{{ job.Published_date }}</strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="border-top border-white border-opacity-10 pt-3">
+
+                            <a href="/job/{{ job.job_id }}" class="btn-details text-center fw-bold">
+
+                                عرض التفاصيل
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="col-12 text-center py-5" data-aos="fade-up">
+
+                    <div class="glass-card p-5 d-inline-block">
+
+                        <i class="bi bi-search display-1 text-white-50 mb-3 d-block opacity-50"></i>
+
+                        <h4 class="text-white fw-bold mb-2">لم يتم العثور على أي وظائف</h4>
+
+                        <p class="text-white-50 mb-0">جرب البحث بكلمات مختلفة أو اضغط على تحديث البيانات.</p>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- Pagination -->
+
+        {% if total_pages > 1 %}
+
+        <nav class="mt-5" data-aos="fade-up">
+
+            <ul class="pagination justify-content-center flex-wrap">
+
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+
+                    <a class="page-link" href="{{ url_for(request.endpoint, page=page-1, q=search_query, location=location, company=company) }}">السابق</a>
+
+                </li>
+
+
+
+                {% for p in range(1, total_pages + 1) %}
+
+                    {% if p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+
+                        <li class="page-item {% if p == page %}active{% endif %}">
+
+                            <a class="page-link" href="{{ url_for(request.endpoint, page=p, q=search_query, location=location, company=company) }}">{{ p }}</a>
+
+                        </li>
+
+                    {% elif p == page - 3 or p == page + 3 %}
+
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+
+                    {% endif %}
+
+                {% endfor %}
+
+
+
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+
+                    <a class="page-link" href="{{ url_for(request.endpoint, page=page+1, q=search_query, location=location, company=company) }}">التالي</a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+        {% endif %}
+
+
+
+    </div>
+
+
+
+    <!-- Modal تحديث البيانات -->
+
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content modal-content-custom">
+
+                <div class="modal-header modal-header-custom p-4">
+
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="updateModalLabel">
+
+                        <i class="bi bi-arrow-clockwise text-warning"></i> تحديث البيانات
+
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+
+                <form id="updateForm" action="/update" method="POST">
+
+                    <div class="modal-body p-4">
+
+                        <label for="job_title" class="form-label text-white-50 fw-semibold mb-2">أدخل اسم الوظيفة المطلوبة:</label>
+
+                        <input type="text" class="form-control form-control-custom" id="job_title" name="job_title" placeholder="مثال: Python, Data Scientist..." required>
+
+                    </div>
+
+                    <div class="modal-footer modal-footer-custom p-3">
+
+                        <button type="button" class="btn btn-outline-light rounded-3 px-4" data-bs-dismiss="modal">إلغاء</button>
+
+                        <button type="submit" class="btn btn-glow px-4">🚀 بدء التحديث</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Sound Effects Script -->
+
+    <script>
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+
+
+        function playClickSound() {
+
+            if (audioCtx.state === 'suspended') {
+
+                audioCtx.resume();
+
+            }
+
+            const osc = audioCtx.createOscillator();
+
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+
+            osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+
+            osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.08);
+
+
+
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+
+
+            osc.connect(gain);
+
+            gain.connect(audioCtx.destination);
+
+
+
+            osc.start();
+
+            osc.stop(audioCtx.currentTime + 0.08);
+
+        }
+
+
+
+        document.querySelectorAll('a, button').forEach(el => {
+
+            el.addEventListener('click', playClickSound);
+
+        });
+
+    </script>
+
+
+
+    <!-- JS Libraries -->
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+
+        AOS.init({ duration: 800, once: true });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!-- كود مراقبة حالة التحديث المحدث والتنبيهات المخصصة -->
+
+    <script>
+
+        let statusCheckInterval = null;
+
+        let searchedJobTitle = '';
+
+
+
+        function renderRunningStatus() {
+
+            const statusDiv = document.getElementById('status-message');
+
+            if (!statusDiv) return;
+
+            statusDiv.innerHTML = `
+
+                <div class="custom-alert custom-alert-info">
+
+                    <div class="spinner-border spinner-glow me-1" role="status"></div>
+
+                    <div class="flex-grow-1">
+
+                        <span>جاري جلب البيانات وتحديث الوظائف ... يرجى الانتظار.</span>
+
+                    </div>
+
+                    <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.remove()"></button>
+
+                </div>
+
+            `;
+
+        }
+
+
+
+        function checkStatus() {
+
+            fetch('/status')
+
+                .then(response => response.text())
+
+                .then(status => {
+
+                    const statusDiv = document.getElementById('status-message');
+
+                    if (!statusDiv) return;
+
+
+
+                    const trimmedStatus = status.trim();
+
+
+
+                    if (trimmedStatus === 'done') {
+                        if (statusCheckInterval) clearInterval(statusCheckInterval);
+                        statusDiv.innerHTML = `
+                            <div class="custom-alert custom-alert-success">
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                <div class="flex-grow-1">
+                                    <span>✅ تم تحديث البيانات بنجاح! جاري إعادة تحميل الصفحة...</span>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.remove()"></button>
+                            </div>
+                        `;
+                        // إعادة تحميل الصفحة بعد 1.5 ثانية
+                        setTimeout(() => location.reload(), 1500);
+
+                    } else if (trimmedStatus === 'running') {
+
+                        renderRunningStatus();
+
+                    } else if (trimmedStatus === 'no_jobs') {
+
+                        if (statusCheckInterval) clearInterval(statusCheckInterval);
+
+                        // اقرأ القيمة من حقل الإدخال مباشرة، وإذا لم تكن موجودة استخدم 'غير معروف'
+
+                        const jobInput = document.getElementById('job_title');
+
+                        const displayQuery = (jobInput && jobInput.value) ? jobInput.value.trim() : 'غير معروف';
+
+                        statusDiv.innerHTML = `
+
+                            <div class="custom-alert custom-alert-warning">
+
+                                <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+
+                                <div class="flex-grow-1">
+
+                                    <span>⚠️ لا توجد وظائف مطابقة للبحث: <strong>"${displayQuery}"</strong>. يرجى تجربة اسم وظيفة آخر.</span>
+
+                                </div>
+
+                                <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.remove()"></button>
+
+                            </div>
+
+                        `;
+
+
+
+                    } else if (trimmedStatus === 'error' || trimmedStatus === 'failed') {
+
+                        if (statusCheckInterval) clearInterval(statusCheckInterval);
+
+                        statusDiv.innerHTML = `
+
+                            <div class="custom-alert custom-alert-danger d-flex flex-column align-items-start gap-2">
+
+                                <div class="d-flex align-items-center gap-2 w-100">
+
+                                    <i class="bi bi-x-circle-fill text-danger fs-4"></i>
+
+                                    <span class="flex-grow-1">حدث خطأ أثناء السحب يرجى المحاولة مجددا !</span>
+
+                                    <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    } else {
+
+                        // في حال إرجاع 'none' أو 'idle' أو عدم وجود سحب نشط
+
+                        if (statusCheckInterval) clearInterval(statusCheckInterval);
+
+                    }
+
+                })
+
+                .catch(() => {
+
+                    const statusDiv = document.getElementById('status-message');
+
+                    if (!statusDiv) return;
+
+                    statusDiv.innerHTML = `
+
+                        <div class="custom-alert custom-alert-warning">
+
+                            <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+
+                            <div class="flex-grow-1">
+
+                                <span>تعذر الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت.</span>
+
+                            </div>
+
+                            <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.remove()"></button>
+
+                        </div>
+
+                    `;
+
+                });
+
+        }
+
+
+
+        function startStatusPolling() {
+
+            if (statusCheckInterval) clearInterval(statusCheckInterval);
+
+            renderRunningStatus();
+
+            statusCheckInterval = setInterval(checkStatus, 3000);
+
+            setTimeout(checkStatus, 1000);
+
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const updateForm = id => document.getElementById(id);
+
+            const formElement = updateForm('updateForm') || document.querySelector('#updateModal form');
+
+
+
+            if (formElement) {
+
+                formElement.addEventListener('submit', function(e) {
+
+                    e.preventDefault();
+
+
+
+                    const jobInput = document.getElementById('job_title');
+
+                    if (jobInput) {
+
+                        searchedJobTitle = jobInput.value;
+
+                    }
+
+
+
+                    const modalElement = document.getElementById('updateModal');
+
+                    if (modalElement) {
+
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+                        modalInstance.hide();
+
+                    }
+
+
+
+                    const formData = new FormData(formElement);
+
+
+
+                    fetch(formElement.action || '/update', {
+
+                        method: 'POST',
+
+                        body: formData
+
+                    })
+
+                    .then(() => {
+
+                        startStatusPolling();
+
+                    })
+
+                    .catch(() => {
+
+                        startStatusPolling();
+
+                    });
+
+                });
+
+            }
+
+
+
+            // فحص وجود رسائل Flask Flashed المعتادة لتفعيل المراقبة
+
+            const flashMessages = document.querySelectorAll('.alert-success, .alert-info');
+
+            for (let msg of flashMessages) {
+
+                if (msg.textContent.includes('بدأ تحديث البيانات') || msg.textContent.includes('جاري')) {
+
+                    startStatusPolling();
+
+                    break;
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+
