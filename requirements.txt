@@ -1,5 +1,4 @@
 flask
-sqlite3
 playwright
 fake-useragent
 beautifulsoup4
