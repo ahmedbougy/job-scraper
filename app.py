@@ -62,9 +62,12 @@ def run_scraper(job_title):
             browser = p.chromium.launch(
                 headless=True,
                 args=[
-                '--window-position=-2000,-2000',  # وضع النافذة في مكان خارج نطاق الشاشة تماماً
-                '--window-size=1280,720'
-            ]
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-dev-shm-usage',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-web-security'
+                ]
             )
             
             context = browser.new_context(
