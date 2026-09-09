@@ -4,5 +4,5 @@ fake-useragent==1.4.0
 beautifulsoup4==4.12.2
 requests==2.31.0
 waitress==2.1.2
-undetected-playwright-patch==1.40.0
-greenlet==3.0.3  
+undetected-playwright-patch==1.40.0.post1700587210000
+greenlet==3.0.3
