@@ -23,7 +23,7 @@ import io
 
 import subprocess
 def run_scraper() :
-    subprocess.run(['python', '-m', 'playwright', 'install', 'chromium'], check=True)
+    #subprocess.run(['python', '-m', 'playwright', 'install', 'chromium'], check=True)
 
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -34,9 +34,14 @@ def run_scraper() :
         searche = 'python'  # قيمة افتراضية
 
     # استخدم المسار النسبي فقط (سيعمل في السحابة)
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)) , 'JOBS.db')
-    status_file_path = 'status.text'
-    status_errors_file_path = 'status_errors_file.text'
+    #file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)) , 'JOBS.db')
+    #status_file_path = 'status.text'
+    #status_errors_file_path = 'status_errors_file.text'
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'JOBS.db')
+    status_file_path = os.path.join(base_dir, 'status.text')
+    status_errors_file_path = os.path.join(base_dir, 'status_errors_file.text')
 
     conn = sqlite3.connect(file_path)
     cursor = conn.cursor()

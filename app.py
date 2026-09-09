@@ -4,6 +4,7 @@ import sqlite3
 import subprocess
 from flask import flash, redirect, url_for
 import subprocess
+import sys  # أضف استيراد sys في بداية app.py
 
 scraper_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scraper.py')
 
@@ -151,7 +152,7 @@ def update_jobs() :
         
     try:
         # تشغيل السكربت في الخلفية مع تمرير اسم الوظيفة
-        subprocess.Popen(['python', scraper_path, job_title], shell=True)
+        subprocess.Popen([sys.executable , scraper_path, job_title])
         flash(f'✅ بدأ تحديث البيانات للوظيفة: "{job_title}" في الخلفية.', 'success')
     except Exception as e:
         flash(f'❌ فشل تشغيل التحديث: {e}', 'danger')
