@@ -8,7 +8,8 @@
 
         #the date is in : {div , class="jb-footer row is-m v-align-center m10t"} then {div , class="jb-date col p0x p0t t-mute"} then {span}
 
-from playwright.sync_api import sync_playwright
+from undetected_playwright.sync_api import sync_playwright
+
 import time
 import sqlite3 
 import os 
@@ -21,218 +22,223 @@ from urllib.parse import quote
 import io
 
 import subprocess
-subprocess.run(['playwright', 'install', 'chromium'], check=True)
+def run_scraper() :
+    subprocess.run(['python', '-m', 'playwright', 'install', 'chromium'], check=True)
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# قراءة اسم الوظيفة من سطر الأوامر
-if len(sys.argv) > 1:
-    searche = sys.argv[1]
-else:
-    searche = 'python'  # قيمة افتراضية
+    # قراءة اسم الوظيفة من سطر الأوامر
+    if len(sys.argv) > 1:
+        searche = sys.argv[1]
+    else:
+        searche = 'python'  # قيمة افتراضية
 
-# استخدم المسار النسبي فقط (سيعمل في السحابة)
-file_path = 'JOBS.db'
-status_file_path = 'status.text'
-status_errors_file_path = 'status_errors_file.text'
+    # استخدم المسار النسبي فقط (سيعمل في السحابة)
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)) , 'JOBS.db')
+    status_file_path = 'status.text'
+    status_errors_file_path = 'status_errors_file.text'
 
-conn = sqlite3.connect(file_path)
-cursor = conn.cursor()
+    conn = sqlite3.connect(file_path)
+    cursor = conn.cursor()
 
-def save_jobs_to_db(jobs_list) :
-    cursor.executemany('''
-INSERT INTO jobs(Job_Title , The_company , Description , Location , Published_date , job_url) VALUES (?,?,?,?,?,?)
-''' , jobs_list)
-    conn.commit()
-    
-try:
-    ua = UserAgent()
+    def save_jobs_to_db(jobs_list) :
+        cursor.executemany('''
+    INSERT INTO jobs(Job_Title , The_company , Description , Location , Published_date , job_url) VALUES (?,?,?,?,?,?)
+    ''' , jobs_list)
+        conn.commit()
+        
+    try:
+        ua = UserAgent()
+        user_agent = ua.random
+    except:
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+
     user_agent = ua.random
-except:
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 
-user_agent = ua.random
+    all_jobs_list = []
 
-all_jobs_list = []
+    filter_jobs_with_date_max = 10
+    page_number = 1
+    with sync_playwright() as p :
+        with open(status_file_path , 'w' , encoding='utf-8') as f :
+            f.write('running')
 
-filter_jobs_with_date_max = 10
-page_number = 1
-with sync_playwright() as p :
-    with open(status_file_path , 'w' , encoding='utf-8') as f :
-        f.write('running')
+        with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
+            f.write(f"looking for a '{searche}' job")
 
-    with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
-        f.write(f"looking for a '{searche}' job")
+        # تمرير أمر لـ Chromium لبدء النافذة مصغرة
+        # الطريقة الصحيحة لاستخدام undetected_playwright
 
-    # تمرير أمر لـ Chromium لبدء النافذة مصغرة
-    browser = p.chromium.launch(
+        browser = p.chromium.launch(
         headless=True,
         args=[
-        '--window-position=-2000,-2000',  # وضع النافذة في مكان خارج نطاق الشاشة تماماً
-        '--window-size=1280,720'
-    ]
-    )
+            '--disable-blink-features=AutomationControlled',
+            '--disable-dev-shm-usage',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins,site-per-process,BlockInsecurePrivateNetworkRequests',
+            '--disable-gpu',
+            '--window-size=1920,1080'
+        ]
+        )
     
-    context = browser.new_context(
-    user_agent=user_agent,
-    viewport={'width': 1920, 'height': 1080},
-    locale='en-US'
-    )
-    page = context.new_page()
+        context = browser.new_context(
+        user_agent=user_agent,
+        viewport={'width': 1920, 'height': 1080},
+        locale='en-US'
+        )
 
-    # سكربت إخفاء الأتمتة (ضعه قبل page.goto)
-    page.add_init_script("""
-        Object.defineProperty(navigator, 'webdriver', {
-            get: () => undefined
-        });
-    """)
-    
-    link = f'https://www.bayt.com/en/international/jobs/{quote(searche)}-jobs/' 
-    try :
-        page.goto(link , timeout=30000)
-        time.sleep(random.uniform(2, 5))
-    except Exception as e :
+        page = context.new_page()
 
-        print(f"We cann't open the first page : we have a problem : {e}")
-        
-        
-    
-    while True :
+        # سكربت إخفاء الأتمتة (ضعه قبل page.goto)
+        # حقن سكربت إضافي لإخفاء علامات الأتمتة
+        page.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5]
+            });
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en']
+            });
+        """)
+
+        link = f'https://www.bayt.com/en/international/jobs/{quote(searche)}-jobs/' 
         try :
-            page.wait_for_selector('div.card.t-center.p0',timeout=15000)
-            break
-        except :
-            pass
+            page.goto(link , timeout=30000)
+            time.sleep(random.uniform(2, 5))
+        except Exception as e :
 
-        try :
-            page.wait_for_selector('li.has-pointer-d' , timeout=15000)
-        except :
+            print(f"We cann't open the first page : we have a problem : {e}")
             
-            print("Sorry ,The items are not displayed on the page , we don't have any jobs with that name")
-            break
+            
+        
+        while True :
+            
+            try :
+                page.wait_for_selector('li.has-pointer-d' , timeout=15000)
+            except :
+                
+                print("Sorry ,The items are not displayed on the page , we don't have any jobs with that name")
+                break
 
-        jobs = page.query_selector_all('li.has-pointer-d')
-        for job in jobs :
-            
-            # تحريك الفأرة عشوائياً
-            page.mouse.move(
-                random.randint(100, 500),
-                random.randint(100, 500)
-            )
+            jobs = page.query_selector_all('li.has-pointer-d')
+            for job in jobs :
+                
+                # تحريك الفأرة عشوائياً
+                page.mouse.move(
+                    random.randint(100, 500),
+                    random.randint(100, 500)
+                )
 
-            job_title = job.query_selector('h2.t-large-d a')
-            job_url = job_title.get_attribute('href')
-            if job_url:
-                job_url = urljoin(link, job_url)
-            else :
-                job_url = 'Unknown'
+                job_title = job.query_selector('h2.t-large-d a')
+                job_url = job_title.get_attribute('href')
+                if job_url:
+                    job_url = urljoin(link, job_url)
+                else :
+                    job_url = 'Unknown'
 
-            companie = job.query_selector('div.job-company-location-wrapper div a')
-            summarie = job.query_selector('div.jb-descr')
-            location = job.query_selector('dt.p0.m20r.jb-label-location.job-company-location-wrapper')
-            date = job.query_selector('div.jb-date')
-            
+                companie = job.query_selector('div.job-company-location-wrapper div a')
+                summarie = job.query_selector('div.jb-descr')
+                location = job.query_selector('dt.p0.m20r.jb-label-location.job-company-location-wrapper')
+                date = job.query_selector('div.jb-date')
+                
 
-            if job_title :
-                job_title = job_title.inner_text().strip()
-            else :
-                job_title = 'Unknown'
-            
-            if companie :
-                companie = companie.inner_text().strip()
-            else :
-                companie = 'Unknown'
-            
-            if summarie :
-                summarie = summarie.inner_text().strip()
-            else :
-                summarie = 'Unknown'
-            
-            if location :
-                location = location.inner_text().strip()
-            else :
-                location = 'Unknown'
-            
-            if date :
-                date = date.inner_text().strip()
-            else :
-                date = 'Unknown'  
+                if job_title :
+                    job_title = job_title.inner_text().strip()
+                else :
+                    job_title = 'Unknown'
+                
+                if companie :
+                    companie = companie.inner_text().strip()
+                else :
+                    companie = 'Unknown'
+                
+                if summarie :
+                    summarie = summarie.inner_text().strip()
+                else :
+                    summarie = 'Unknown'
+                
+                if location :
+                    location = location.inner_text().strip()
+                else :
+                    location = 'Unknown'
+                
+                if date :
+                    date = date.inner_text().strip()
+                else :
+                    date = 'Unknown'  
 
-            # '^'	تعني "بداية النص فقط". تضمن عدم سحب أي رقم يظهر في منتصف أو نهاية النص.
-            match = re.match(r'\d+',date)
-            if match :
-                day_ago = int(match.group())
-                if day_ago <= filter_jobs_with_date_max :
+                # '^'	تعني "بداية النص فقط". تضمن عدم سحب أي رقم يظهر في منتصف أو نهاية النص.
+                match = re.match(r'\d+',date)
+                if match :
+                    day_ago = int(match.group())
+                    if day_ago <= filter_jobs_with_date_max :
+                        all_jobs_list.append([job_title, companie , summarie , location , date , job_url])
+
+                elif 'today' in date.lower() or 'yesterday' in date.lower() :
                     all_jobs_list.append([job_title, companie , summarie , location , date , job_url])
-
-            elif 'today' in date.lower() or 'yesterday' in date.lower() :
-                all_jobs_list.append([job_title, companie , summarie , location , date , job_url])
+                
             
-        
-        print(f'saving the jobs from page number: {page_number} is done.')
-        
-        try :
-            the_last_page = page.query_selector('li.pagination-next.u-none a')
-        except :
-            pass
-        if the_last_page :
-            break
-        
-        
-        next_li = page.query_selector('li.pagination-next')
-        if next_li :
-            next_link = next_li.query_selector('a')
-            if next_link :
-                href = next_link.get_attribute('href')
-                link = urljoin(link , href)
-                try:
-                    page.goto(link, timeout=60000) # زيادة مهلة الانتظار لـ 60 ثانية
+            print(f'saving the jobs from page number: {page_number} is done.')
+            
+            try:
+                the_last_page = page.query_selector('li.pagination-next.u-none a')
+            except:
+                pass
+            if the_last_page:
+                break
+
+            next_li = page.query_selector('li.pagination-next')
+            if next_li:
+                next_link = next_li.query_selector('a')
+                if next_link:
+                    href = next_link.get_attribute('href')
+                    link = urljoin(link, href)
+                    page.goto(link)
                     time.sleep(random.uniform(2, 5))
                     page_number += 1
-                except Exception as e:
-                    print(f"حدث خطأ شبكة أثناء فتح الصفحة {link}: {e}")
-                    print("إعادة المحاولة بعد 10 ثوانٍ...")
-                    time.sleep(10)
-                    try:
-                        page.goto(link, timeout=60000)
-                        page_number += 1
-                    except Exception:
-                        
-                        break
-               
-        else :
-            break
+                else:
+                    break
+            else:
+                break
 
-    if all_jobs_list:
+        if all_jobs_list:
 
-        cursor.execute('DROP TABLE IF EXISTS jobs')
-        cursor.execute('''CREATE TABLE IF NOT EXISTS jobs(
-    
-                Job_Title TEXT,
-                The_company TEXT,
-                Description TEXT,
-                Location TEXT,
-                Published_date TEXT,
-                job_url TEXT,
-                ID INTEGER PRIMARY KEY AUTOINCREMENT)''')
+            cursor.execute('DROP TABLE IF EXISTS jobs')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS jobs(
+        
+                    Job_Title TEXT,
+                    The_company TEXT,
+                    Description TEXT,
+                    Location TEXT,
+                    Published_date TEXT,
+                    job_url TEXT,
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT)''')
 
-        save_jobs_to_db(all_jobs_list)
-        print(f"✅ تم العثور على {len(all_jobs_list)} وظيفة.")
+            save_jobs_to_db(all_jobs_list)
 
-        with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
-            f.write(f"✅ تم العثور على {len(all_jobs_list)} وظيفة.")
+            print(f"✅ تم العثور على {len(all_jobs_list)} وظيفة.")
 
-        with open(status_file_path, 'w' , encoding='utf-8') as f:
-            f.write('done')
-    else:
-        with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
-            f.write(f"We don't have any jobs with this nam {searche}")
+            with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
+                f.write(f"✅ تم العثور على {len(all_jobs_list)} وظيفة.")
 
-        with open(status_file_path, 'w' , encoding='utf-8') as f:
-            f.write('error')
+            with open(status_file_path, 'w' , encoding='utf-8') as f:
+                f.write('done')
+        else:
+            with open(status_errors_file_path, 'w' , encoding='utf-8') as f:
+                f.write(f"We don't have any jobs with this nam {searche}")
 
-        print("❌ لا توجد وظائف مطابقة للبحث.")
+            with open(status_file_path, 'w' , encoding='utf-8') as f:
+                f.write('error')
 
-# لا تكتب 'done' في status_errors_file_path هنا   
-    context.close()
-    conn.close()
+            print("❌ لا توجد وظائف مطابقة للبحث.")
+
+    # لا تكتب 'done' في status_errors_file_path هنا   
+        context.close()
+        conn.close()
+
+if __name__ == '__main__' :
+    run_scraper()

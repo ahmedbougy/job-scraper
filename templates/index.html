@@ -1158,6 +1158,7 @@
 
                     if (trimmedStatus === 'done') {
                         if (statusCheckInterval) clearInterval(statusCheckInterval);
+                        clearInterval(statusCheckInterval)
                         statusDiv.innerHTML = `
                             <div class="custom-alert custom-alert-success">
                                 <i class="bi bi-check-circle-fill text-success fs-4"></i>
