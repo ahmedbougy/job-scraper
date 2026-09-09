@@ -1,7 +1,8 @@
-flask
-playwright
-fake-useragent
-beautifulsoup4
-requests
-waitress
-undetected-playwright-patch
+flask==2.3.3
+playwright==1.40.0
+fake-useragent==1.4.0
+beautifulsoup4==4.12.2
+requests==2.31.0
+waitress==2.1.2
+undetected-playwright-patch==1.40.0
+greenlet==3.0.3  
