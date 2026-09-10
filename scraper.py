@@ -34,14 +34,14 @@ def run_scraper() :
         searche = 'python'  # قيمة افتراضية
 
     # استخدم المسار النسبي فقط (سيعمل في السحابة)
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)) , 'JOBS.db')
-    status_file_path = 'status.text'
-    status_errors_file_path = 'status_errors_file.text'
+    #file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)) , 'JOBS.db')
+    #status_file_path = 'status.text'
+    #status_errors_file_path = 'status_errors_file.text'
 
-    #base_dir = os.path.dirname(os.path.abspath(__file__))
-    #file_path = os.path.join(base_dir, 'JOBS.db')
-    #status_file_path = os.path.join(base_dir, 'status.text')
-    #status_errors_file_path = os.path.join(base_dir, 'status_errors_file.text')
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'JOBS.db')
+    status_file_path = os.path.join(base_dir, 'status.text')
+    status_errors_file_path = os.path.join(base_dir, 'status_errors_file.text')
 
     conn = sqlite3.connect(file_path)
     cursor = conn.cursor()
@@ -177,7 +177,7 @@ def run_scraper() :
                     date = 'Unknown'  
 
                 # '^'	تعني "بداية النص فقط". تضمن عدم سحب أي رقم يظهر في منتصف أو نهاية النص.
-                match = re.match(r'\d+',date)
+                match = re.search(r'\d+', date)
                 if match :
                     day_ago = int(match.group())
                     if day_ago <= filter_jobs_with_date_max :

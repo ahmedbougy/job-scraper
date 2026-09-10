@@ -149,7 +149,15 @@ def update_jobs() :
         if not job_title :
             flash('❌ الرجاء إدخال اسم وظيفة صحيح.', 'danger')
             return redirect(url_for('jobsinfo'))
-        
+
+
+    # تصفير ملفات الحالة فوراً لمنع القراءة الخاطئة للواجهة
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(base_dir, 'status.text'), 'w', encoding='utf-8') as f:
+            f.write('running')
+        with open(os.path.join(base_dir, 'status_errors_file.text'), 'w', encoding='utf-8') as f:
+            f.write(f"looking for a '{job_title}' job")
+
     try:
         # تشغيل السكربت في الخلفية مع تمرير اسم الوظيفة
         subprocess.Popen([sys.executable , scraper_path, job_title])
