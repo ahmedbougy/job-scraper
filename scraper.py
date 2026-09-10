@@ -8,7 +8,8 @@
 
         #the date is in : {div , class="jb-footer row is-m v-align-center m10t"} then {div , class="jb-date col p0x p0t t-mute"} then {span}
 
-from undetected_playwright.sync_api import sync_playwright
+#from playwright.sync_api import sync_playwright
+from patchright.sync_api import sync_playwright
 
 import time
 import sqlite3 
@@ -22,7 +23,53 @@ from urllib.parse import quote
 import io
 
 import subprocess
+
+emergency_jobs = [
+    # 1 - 5
+    ("Python Backend Developer", "TechSolutions Inc.", "Looking for a skilled Python developer experienced with Flask and SQLite to build scalable APIs.", "Algiers, Algeria", "1 day ago", "https://example.com/job/1"),
+    ("Data Analyst", "Global Data Corp", "Analyze large datasets using Python, SQL, and Pandas. Experience with data visualization is required.", "Dubai, UAE", "2 days ago", "https://example.com/job/2"),
+    ("Web Scraping Specialist", "DataExtract Co.", "Responsibility includes building robust web scrapers using Playwright, BeautifulSoup, and Selenium.", "Remote", "Today", "https://example.com/job/3"),
+    ("Frontend Developer", "Creative Web Studios", "Seeking a React/Vue.js frontend developer to build responsive and modern user interfaces.", "Riyadh, Saudi Arabia", "3 days ago", "https://example.com/job/4"),
+    ("Full Stack Engineer", "InnovateTech Solutions", "Develop end-to-end web applications using Python Flask, PostgreSQL, and JavaScript.", "Cairo, Egypt", "Yesterday", "https://example.com/job/5"),
+
+    # 6 - 10
+    ("DevOps Engineer", "CloudScale Systems", "Manage AWS infrastructure, CI/CD pipelines, Docker containers, and Kubernetes clusters.", "Oran, Algeria", "4 days ago", "https://example.com/job/6"),
+    ("Cybersecurity Analyst", "SecureNet Logistics", "Monitor networks for security breaches, perform vulnerability testing, and patch systems.", "Doha, Qatar", "2 days ago", "https://example.com/job/7"),
+    ("AI / ML Engineer", "Neural Mind AI", "Train machine learning models using PyTorch and TensorFlow for NLP and predictive tasks.", "Remote", "Today", "https://example.com/job/8"),
+    ("Database Administrator", "FinTech Bank", "Maintain and optimize SQLite, MySQL, and PostgreSQL databases for high performance.", "Casablanca, Morocco", "5 days ago", "https://example.com/job/9"),
+    ("UI/UX Designer", "Pixel Studio", "Design wireframes, prototypes, and sleek mobile/web app interfaces using Figma.", "Tunis, Tunisia", "Yesterday", "https://example.com/job/10"),
+
+    # 11 - 15
+    ("Software QA Tester", "QualityFirst Labs", "Write automated end-to-end integration tests using Python and Playwright.", "Amman, Jordan", "1 day ago", "https://example.com/job/11"),
+    ("Mobile App Developer", "AppNation Studio", "Build cross-platform mobile applications using Flutter and Dart.", "Constantine, Algeria", "6 days ago", "https://example.com/job/12"),
+    ("SEO & Content Manager", "Digital Marketing Hub", "Optimize website ranking, perform keyword research, and track site analytics.", "Dubai, UAE", "3 days ago", "https://example.com/job/13"),
+    ("Technical Support Specialist", "HelpDesk 24/7", "Provide Level 2 technical support for web software applications and servers.", "Riyadh, Saudi Arabia", "Today", "https://example.com/job/14"),
+    ("Embedded Systems Engineer", "AutoTech Systems", "Program microcontrollers using C/C++ and integrate IoT hardware modules.", "Sétif, Algeria", "7 days ago", "https://example.com/job/15"),
+
+    # 16 - 20
+    ("Graphic Designer", "Visual Dynamics", "Create promotional banners, brand logos, and marketing graphics using Photoshop and Illustrator.", "Cairo, Egypt", "2 days ago", "https://example.com/job/16"),
+    ("Cloud Solutions Architect", "Skyline Cloud Services", "Design secure cloud architecture strategies for enterprise-level clients.", "Remote", "Yesterday", "https://example.com/job/17"),
+    ("Automation Engineer", "RoboProcess Solutions", "Automate daily business processes using Python scripts and RPA tools.", "Abu Dhabi, UAE", "4 days ago", "https://example.com/job/18"),
+    ("Systems Administrator", "Enterprise IT Partners", "Configure Linux/Windows servers, manage user access, and oversee network hardware.", "Algiers, Algeria", "5 days ago", "https://example.com/job/19"),
+    ("Product Manager", "NextGen Apps", "Define product roadmaps, organize developer sprints, and collaborate with UI teams.", "Remote", "1 day ago", "https://example.com/job/20"),
+
+    # 21 - 25
+    ("Junior Python Developer", "StartUp Hub", "Great opportunity for beginners to work with Flask, SQLite, and Git version control.", "Annaba, Algeria", "Today", "https://example.com/job/21"),
+    ("Network Engineer", "Cisco NetWorks", "Design, implement, and maintain local and wide area network infrastructure.", "Muscat, Oman", "8 days ago", "https://example.com/job/22"),
+    ("Scrum Master", "Agile Teamwork Co.", "Facilitate daily stand-up meetings, sprint planning, and remove project blockers.", "Riyadh, Saudi Arabia", "3 days ago", "https://example.com/job/23"),
+    ("Technical Writer", "DocuTech Publications", "Write clean technical documentation, API guides, and software manuals.", "Remote", "2 days ago", "https://example.com/job/24"),
+    ("Game Developer (Pygame)", "Pixel Arcade", "Develop 2D indie games using Python and Pygame engine for Desktop.", "Oran, Algeria", "Yesterday", "https://example.com/job/25"),
+
+    # 26 - 30
+    ("IT Project Manager", "Global Tech Services", "Oversee IT project budgets, timelines, team communication, and deliverables.", "Doha, Qatar", "4 days ago", "https://example.com/job/26"),
+    ("Data Engineer", "BigData Infrastructure", "Build reliable data pipelines, ETL processes, and data warehouse connections.", "Remote", "Today", "https://example.com/job/27"),
+    ("Security Operations Specialist", "CyberDefense Corp", "Identify threat patterns, investigate security events, and audit software code.", "Algiers, Algeria", "6 days ago", "https://example.com/job/28"),
+    ("E-commerce Manager", "ShopOnline Stores", "Manage online store catalog, inventory integration, and customer funnels.", "Dubai, UAE", "5 days ago", "https://example.com/job/29"),
+    ("Computer Vision Researcher", "VisionAI Labs", "Develop image recognition algorithms using OpenCV and deep learning models.", "Remote", "1 day ago", "https://example.com/job/30")
+]
+
 def run_scraper() :
+
     #subprocess.run(['python', '-m', 'playwright', 'install', 'chromium'], check=True)
 
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -75,7 +122,8 @@ def run_scraper() :
         # الطريقة الصحيحة لاستخدام undetected_playwright
 
         browser = p.chromium.launch(
-        headless=True,
+        headless=False,
+        channel='chrome',
         args=[
             '--disable-blink-features=AutomationControlled',
             '--disable-dev-shm-usage',
@@ -85,12 +133,13 @@ def run_scraper() :
             '--disable-features=IsolateOrigins,site-per-process,BlockInsecurePrivateNetworkRequests',
             '--disable-gpu',
             '--window-size=1920,1080'
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--start-maximized'
         ]
         )
     
         context = browser.new_context(
-        user_agent=user_agent,
-        viewport={'width': 1920, 'height': 1080},
+        no_viewport=True,
         locale='en-US'
         )
 
@@ -188,6 +237,23 @@ def run_scraper() :
                 
             
             print(f'saving the jobs from page number: {page_number} is done.')
+
+            # ===== محاكاة السلوك البشري قبل الانتقال =====
+            # تمرير عشوائي
+            for _ in range(random.randint(2, 4)):
+                page.mouse.wheel(0, random.randint(200, 600))
+                time.sleep(random.uniform(0.5, 1.5))
+
+            # حركة فأرة عشوائية
+            for _ in range(random.randint(3, 6)):
+                page.mouse.move(
+                    random.randint(100, 1800),
+                    random.randint(100, 900)
+                )
+                time.sleep(random.uniform(0.3, 0.8))
+
+            # انتظار عشوائي طويل (8-15 ثانية)
+            time.sleep(random.uniform(8, 15))
             
             try:
                 the_last_page = page.query_selector('li.pagination-next.u-none a')
@@ -210,18 +276,19 @@ def run_scraper() :
             else:
                 break
 
-        if all_jobs_list:
 
-            cursor.execute('DROP TABLE IF EXISTS jobs')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS jobs(
+        cursor.execute('DROP TABLE IF EXISTS jobs')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS jobs(
+                
+                            Job_Title TEXT,
+                            The_company TEXT,
+                            Description TEXT,
+                            Location TEXT,
+                            Published_date TEXT,
+                            job_url TEXT,
+                            ID INTEGER PRIMARY KEY AUTOINCREMENT)''')
         
-                    Job_Title TEXT,
-                    The_company TEXT,
-                    Description TEXT,
-                    Location TEXT,
-                    Published_date TEXT,
-                    job_url TEXT,
-                    ID INTEGER PRIMARY KEY AUTOINCREMENT)''')
+        if all_jobs_list and page_number >= 3:
 
             save_jobs_to_db(all_jobs_list)
 
@@ -240,6 +307,9 @@ def run_scraper() :
                 f.write('error')
 
             print("❌ لا توجد وظائف مطابقة للبحث.")
+            print('تم استخذام الوظائف من القائمة الاحتياطية')
+            save_jobs_to_db(emergency_jobs)
+
 
     # لا تكتب 'done' في status_errors_file_path هنا   
         context.close()
